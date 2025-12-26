@@ -1,180 +1,193 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlockTube Pro</title>
+    <title>BlockTube Pro - Bağımsız Platform</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --bg: #0f0f0f; --text: #f1f1f1; --accent: #00d2ff; --card-bg: #1e1e1e; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+        :root { --bg: #050505; --text: #ffffff; --accent: #00d2ff; --card-bg: #121212; --danger: #ff4d4d; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        header { position: fixed; top: 0; width: 100%; height: 56px; background: var(--bg); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 2000; border-bottom: 1px solid #222; }
-        .logo { display: flex; align-items: center; gap: 8px; font-weight: bold; cursor: pointer; }
-        .logo img { height: 30px; border-radius: 5px; }
+        /* Header */
+        header { position: fixed; top: 0; width: 100%; height: 60px; background: rgba(5,5,5,0.9); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 2000; border-bottom: 1px solid #222; backdrop-filter: blur(10px); }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: bold; color: var(--accent); cursor: pointer; }
+        .logo img { height: 32px; border-radius: 6px; }
 
-        .profile-trigger { width: 35px; height: 35px; border-radius: 50%; overflow: hidden; cursor: pointer; border: 2px solid var(--accent); }
+        .profile-container { position: relative; }
+        .profile-trigger { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; cursor: pointer; border: 2px solid var(--accent); }
         .profile-trigger img { width: 100%; height: 100%; object-fit: cover; }
 
-        main { padding: 70px 10px 20px 10px; max-width: 1400px; margin: 0 auto; }
+        main { padding: 80px 10px 40px 10px; max-width: 1600px; margin: 0 auto; }
 
-        /* 10 Tane Yuvarlak Shorts */
-        .shorts-wrapper { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; margin-bottom: 20px; }
+        /* 10 Yuvarlak Shorts */
+        .shorts-wrapper { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px; margin-bottom: 25px; scrollbar-width: none; }
         .shorts-wrapper::-webkit-scrollbar { display: none; }
-        .short-circle { flex: 0 0 auto; text-align: center; width: 70px; cursor: pointer; }
-        .short-circle img { width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; padding: 2px; transition: 0.3s; }
-        .short-circle:hover img { transform: rotate(10deg) scale(1.1); }
-        .short-circle p { font-size: 10px; margin-top: 5px; white-space: nowrap; overflow: hidden; }
+        .short-item { flex: 0 0 auto; text-align: center; width: 80px; cursor: pointer; }
+        .short-item img { width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; padding: 2px; transition: 0.3s; }
+        .short-item:hover img { transform: scale(1.1); box-shadow: 0 0 15px var(--accent); }
+        .short-item p { font-size: 11px; margin-top: 5px; color: #aaa; }
 
-        /* Arama Çubuğu */
-        .search-section { display: flex; justify-content: center; margin: 20px 0 30px 0; }
-        .search-bar { width: 100%; max-width: 600px; display: flex; background: #121212; border: 1px solid #333; border-radius: 40px; padding: 5px 20px; }
-        .search-bar input { background: transparent; border: none; color: white; width: 100%; padding: 8px; outline: none; }
+        /* Arama */
+        .search-area { display: flex; justify-content: center; margin-bottom: 30px; }
+        .search-box { width: 100%; max-width: 600px; display: flex; background: #111; border: 1px solid #333; border-radius: 50px; padding: 5px 20px; }
+        .search-box input { background: transparent; border: none; color: white; width: 100%; padding: 10px; outline: none; }
 
-        /* 5'li Video Düzeni */
-        .video-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
-        .video-card { background: var(--card-bg); border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.3s; position: relative; }
-        .video-card:hover { transform: translateY(-5px); }
-        .video-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
-        .v-meta { padding: 8px; }
-        .v-meta h4 { font-size: 12px; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .btn-delete { position: absolute; top: 5px; right: 5px; background: rgba(255,0,0,0.7); border: none; color: white; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: none; }
-        .video-card:hover .btn-delete { display: block; }
+        /* 5'li Grid */
+        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; cursor: pointer; border: 1px solid #222; position: relative; transition: 0.3s; }
+        .card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .card video, .card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+        .card-info { padding: 10px; }
+        .card-info h4 { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .delete-btn { position: absolute; top: 8px; right: 8px; background: var(--danger); border: none; color: white; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; display: none; z-index: 10; }
+        .card:hover .delete-btn { display: block; }
 
         /* Profil Menüsü */
-        .p-menu { display: none; position: fixed; top: 55px; right: 10px; width: 280px; background: #222; border-radius: 12px; z-index: 3000; padding: 10px 0; box-shadow: 0 5px 20px rgba(0,0,0,0.8); }
-        .menu-item { padding: 12px 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; font-size: 14px; }
-        .menu-item:hover { background: #333; }
+        .menu { display: none; position: absolute; top: 50px; right: 0; width: 250px; background: #181818; border-radius: 12px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 3000; overflow: hidden; }
+        .menu-btn { padding: 15px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .menu-btn:hover { background: #252525; color: var(--accent); }
+        .menu-btn i { width: 20px; text-align: center; }
 
-        /* Video Oynatıcı Modal */
-        .video-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 5000; justify-content: center; align-items: center; }
-        .modal-body { width: 90%; max-width: 800px; text-align: center; }
+        /* Oynatıcı */
+        .player-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #000; z-index: 5000; flex-direction: column; justify-content: center; align-items: center; }
+        .player-content { width: 95%; max-width: 1000px; }
+        .back-btn { margin-bottom: 20px; background: none; border: 1px solid var(--accent); color: var(--accent); padding: 10px 25px; border-radius: 30px; cursor: pointer; font-weight: bold; }
+        #mainVideo { width: 100%; border-radius: 15px; box-shadow: 0 0 40px rgba(0,210,255,0.2); }
 
-        @media (max-width: 1000px) { .video-container { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo" onclick="location.reload()"><img src="1766565458715.jpg"> BlockTube</div>
-        <div class="profile-trigger" onclick="toggleMenu()">
-            <img src="https://www.w3schools.com/howto/img_avatar.png" id="pPic">
+        <div class="logo" onclick="location.reload()">
+            <img src="1766565458715.jpg"> BlockTube
+        </div>
+        <div class="profile-container">
+            <div class="profile-trigger" onclick="toggleMenu()">
+                <img src="https://www.w3schools.com/howto/img_avatar.png">
+            </div>
+            <div class="menu" id="sideMenu">
+                <div class="menu-btn" onclick="document.getElementById('fileIn').click()">
+                    <i class="fas fa-cloud-upload-alt"></i> Video Yükle (.mp4)
+                </div>
+                <div class="menu-btn" onclick="alert('Silme modu aktif! Videoların üzerindeki X butonuna basın.')">
+                    <i class="fas fa-edit"></i> Videoları Yönet
+                </div>
+                <div class="menu-btn" onclick="location.reload()">
+                    <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                </div>
+            </div>
         </div>
     </header>
 
-    <div class="p-menu" id="pMenu">
-        <div style="padding:15px; border-bottom:1px solid #333; text-align:center;">
-            <p style="font-weight:bold;">erkanozkan06</p>
-        </div>
-        <div class="menu-item" onclick="openUpload()"><i class="fas fa-upload"></i> Video Yükle</div>
-        <div class="menu-item"><i class="fas fa-user-circle"></i> Kanalınız</div>
-        <div class="menu-item" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> Çıkış</div>
-    </div>
+    <input type="file" id="fileIn" accept="video/*" style="display:none" onchange="handleUpload(event)">
 
     <main>
-        <div class="shorts-wrapper">
-            <div id="shortsPlace"></div>
-        </div>
+        <div class="shorts-wrapper" id="shortsDiv"></div>
 
-        <div class="search-section">
-            <div class="search-bar">
-                <input type="text" placeholder="BlockTube'da Ara...">
-                <i class="fas fa-search" style="margin-top:10px; color:#555;"></i>
+        <div class="search-area">
+            <div class="search-box">
+                <input type="text" placeholder="BlockTube'da keşfe çık...">
+                <i class="fas fa-search" style="margin-top:12px; color:#555;"></i>
             </div>
         </div>
 
-        <div class="video-container" id="vGrid">
-            </div>
+        <div class="grid" id="videoGrid"></div>
     </main>
 
-    <div class="video-modal" id="vModal" onclick="closeVideo()">
-        <div class="modal-body">
-            <iframe id="player" width="100%" height="450" src="" frameborder="0" allowfullscreen></iframe>
-            <h3 id="vT" style="margin-top:15px;"></h3>
+    <div class="player-overlay" id="playerModal">
+        <div class="player-content">
+            <button class="back-btn" onclick="closePlayer()"><i class="fas fa-arrow-left"></i> ANA MENÜYE DÖN</button>
+            <video id="mainVideo" controls autoplay></video>
+            <h2 id="videoTitle" style="margin-top:20px;"></h2>
         </div>
     </div>
 
     <script>
-        // 10 Tane Yuvarlak Shorts Oluşturma
-        const shortsGrid = document.getElementById('shortsPlace');
-        for(let i=1; i<=10; i++) {
-            shortsGrid.innerHTML += `
-                <div class="short-circle" onclick="playVideo('dQw4w9WgXcQ', 'Short #${i}')">
-                    <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=100&h=100&fit=crop">
-                    <p>Short #${i}</p>
-                </div>
-            `;
-        }
-
-        // Başlangıç Videoları (5'li Düzen)
-        const vGrid = document.getElementById('vGrid');
-        const sampleVideos = [
-            {id: 'dQw4w9WgXcQ', title: 'BlockTube Tanıtım'},
-            {id: 'aqz-KE-bpKQ', title: 'Web 3.0 Geleceği'},
-            {id: '9bZkp7q19f0', title: 'Gangnam Style Nostalji'},
-            {id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito'},
-            {id: 'JGwWNGJdvx8', title: 'Ed Sheeran - Shape of You'}
+        let myVideos = [
+            {t: 'Okyanus Esintisi', src: 'https://cdn.pixabay.com/vimeo/411310065/ocean-36630.mp4?width=1280'},
+            {t: 'Geleceğin Teknolojisi', src: 'https://cdn.pixabay.com/vimeo/147171409/matrix-1184.mp4?width=1280'}
         ];
 
-        function renderVideos() {
-            vGrid.innerHTML = '';
-            // 4 satır x 5 video = 20 video alanı
-            for(let i=0; i<20; i++) {
-                let v = sampleVideos[i % 5];
-                vGrid.innerHTML += `
-                    <div class="video-card">
-                        <button class="btn-delete" onclick="event.stopPropagation(); deleteVideo(this)">×</button>
-                        <img src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" onclick="playVideo('${v.id}', '${v.title}')">
-                        <div class="v-meta">
-                            <h4>${v.title}</h4>
-                            <p style="font-size:10px; color:#aaa;">erkanozkan06</p>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-        renderVideos();
-
         function toggleMenu() {
-            const m = document.getElementById('pMenu');
+            const m = document.getElementById('sideMenu');
             m.style.display = m.style.display === 'block' ? 'none' : 'block';
         }
 
-        function playVideo(id, title) {
-            document.getElementById('player').src = `https://www.youtube.com/embed/${id}?autoplay=1`;
-            document.getElementById('vT').innerText = title;
-            document.getElementById('vModal').style.display = 'flex';
-        }
-
-        function closeVideo() {
-            document.getElementById('vModal').style.display = 'none';
-            document.getElementById('player').src = '';
-        }
-
-        function openUpload() {
-            const title = prompt("Video Başlığı:");
-            const id = prompt("YouTube Video ID (Örn: dQw4w9WgXcQ):");
-            if(title && id) {
-                sampleVideos.unshift({id: id, title: title});
-                renderVideos();
-                alert("Video Başarıyla Yüklendi!");
+        function render() {
+            // Shorts (10 Adet)
+            const sd = document.getElementById('shortsDiv');
+            sd.innerHTML = '';
+            for(let i=1; i<=10; i++){
+                sd.innerHTML += `<div class="short-item" onclick="playVideo('${myVideos[i%myVideos.length].src}', 'Kısa #${i}')">
+                    <img src="https://images.pexels.com/photos/1001682/pexels-photo-1001682.jpeg?auto=compress&w=200">
+                    <p>Kısa #${i}</p>
+                </div>`;
             }
-            toggleMenu();
+
+            // Grid (5'li Düzen)
+            const vg = document.getElementById('videoGrid');
+            vg.innerHTML = '';
+            myVideos.forEach((vid, index) => {
+                vg.innerHTML += `
+                    <div class="card" onclick="playVideo('${vid.src}', '${vid.t}')">
+                        <button class="delete-btn" onclick="event.stopPropagation(); deleteVideo(${index})"><i class="fas fa-times"></i></button>
+                        <video src="${vid.src}" muted></video>
+                        <div class="card-info">
+                            <h4>${vid.t}</h4>
+                            <p style="font-size:10px; color:#666;">BlockTube Orijinal</p>
+                        </div>
+                    </div>`;
+            });
         }
 
-        function deleteVideo(btn) {
+        function handleUpload(e) {
+            const file = e.target.files[0];
+            if(file) {
+                const url = URL.createObjectURL(file);
+                const title = file.name.replace('.mp4', '');
+                myVideos.unshift({t: title, src: url});
+                render();
+                toggleMenu();
+                alert("Video başarıyla yüklendi!");
+            }
+        }
+
+        function deleteVideo(index) {
             if(confirm("Bu videoyu silmek istiyor musun?")) {
-                btn.parentElement.remove();
+                myVideos.splice(index, 1);
+                render();
             }
         }
 
-        window.onclick = (e) => {
-            if(!e.target.closest('.profile-trigger') && !e.target.closest('.p-menu')) {
-                document.getElementById('pMenu').style.display = 'none';
-            }
+        function playVideo(src, title) {
+            const modal = document.getElementById('playerModal');
+            const video = document.getElementById('mainVideo');
+            video.src = src;
+            document.getElementById('videoTitle').innerText = title;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         }
+
+        function closePlayer() {
+            const video = document.getElementById('mainVideo');
+            video.pause();
+            video.src = "";
+            document.getElementById('playerModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Tıklama dışı kapatma
+        window.onclick = function(e) {
+            if(!e.target.closest('.profile-container')) document.getElementById('sideMenu').style.display = 'none';
+            if(e.target.id === 'playerModal') closePlayer();
+        }
+
+        render();
     </script>
 </body>
 </html>
- 
