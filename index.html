@@ -1,156 +1,180 @@
-<!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlockTube Premium</title>
+    <title>BlockTube Pro</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --bg: #0f0f0f; --menu-bg: #282828; --text: #f1f1f1; --accent: #00d2ff; --hover: #272727; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Roboto, Arial, sans-serif; }
+        :root { --bg: #0f0f0f; --text: #f1f1f1; --accent: #00d2ff; --card-bg: #1e1e1e; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         body { background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* Üst Menü */
-        header { position: fixed; top: 0; width: 100%; height: 56px; background: var(--bg); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 2000; }
-        .logo { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: bold; font-size: 18px; }
-        .logo img { height: 32px; border-radius: 5px; }
-        
-        .header-icons { display: flex; align-items: center; gap: 20px; }
-        .upload-btn { cursor: pointer; font-size: 20px; color: var(--text); }
-        .profile-trigger { width: 34px; height: 34px; border-radius: 50%; background: #3a7bd5; cursor: pointer; overflow: hidden; border: 1px solid #444; }
+        header { position: fixed; top: 0; width: 100%; height: 56px; background: var(--bg); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 2000; border-bottom: 1px solid #222; }
+        .logo { display: flex; align-items: center; gap: 8px; font-weight: bold; cursor: pointer; }
+        .logo img { height: 30px; border-radius: 5px; }
+
+        .profile-trigger { width: 35px; height: 35px; border-radius: 50%; overflow: hidden; cursor: pointer; border: 2px solid var(--accent); }
         .profile-trigger img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Yan Menü */
-        .sidebar { position: fixed; left: 0; top: 56px; width: 240px; height: 100vh; background: var(--bg); padding: 12px; }
-        .nav-item { display: flex; align-items: center; padding: 10px 12px; border-radius: 10px; color: white; text-decoration: none; font-size: 14px; transition: 0.2s; }
-        .nav-item:hover { background: var(--hover); }
-        .nav-item i { margin-right: 20px; font-size: 20px; width: 24px; text-align: center; }
+        main { padding: 70px 10px 20px 10px; max-width: 1400px; margin: 0 auto; }
 
-        /* Ana İçerik Alanı */
-        main { margin-left: 240px; padding: 80px 24px; }
+        /* 10 Tane Yuvarlak Shorts */
+        .shorts-wrapper { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; margin-bottom: 20px; }
+        .shorts-wrapper::-webkit-scrollbar { display: none; }
+        .short-circle { flex: 0 0 auto; text-align: center; width: 70px; cursor: pointer; }
+        .short-circle img { width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; padding: 2px; transition: 0.3s; }
+        .short-circle:hover img { transform: rotate(10deg) scale(1.1); }
+        .short-circle p { font-size: 10px; margin-top: 5px; white-space: nowrap; overflow: hidden; }
 
-        /* Shorts Bölümü */
-        .shorts-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; overflow-x: auto; padding-bottom: 20px; }
-        .short-card img { width: 100%; border-radius: 12px; aspect-ratio: 9/16; object-fit: cover; transition: 0.3s; }
-        .short-card:hover img { transform: scale(1.03); box-shadow: 0 0 15px var(--accent); }
+        /* Arama Çubuğu */
+        .search-section { display: flex; justify-content: center; margin: 20px 0 30px 0; }
+        .search-bar { width: 100%; max-width: 600px; display: flex; background: #121212; border: 1px solid #333; border-radius: 40px; padding: 5px 20px; }
+        .search-bar input { background: transparent; border: none; color: white; width: 100%; padding: 8px; outline: none; }
 
-        /* Video Paylaşımları (Grid) */
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 20px; }
-        .v-card { cursor: pointer; }
-        .v-card img { width: 100%; border-radius: 12px; aspect-ratio: 16/9; object-fit: cover; }
-        .v-info { display: flex; gap: 12px; margin-top: 12px; }
-        .v-avatar { width: 36px; height: 36px; border-radius: 50%; background: #444; flex-shrink: 0; }
+        /* 5'li Video Düzeni */
+        .video-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
+        .video-card { background: var(--card-bg); border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.3s; position: relative; }
+        .video-card:hover { transform: translateY(-5px); }
+        .video-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+        .v-meta { padding: 8px; }
+        .v-meta h4 { font-size: 12px; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .btn-delete { position: absolute; top: 5px; right: 5px; background: rgba(255,0,0,0.7); border: none; color: white; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: none; }
+        .video-card:hover .btn-delete { display: block; }
 
-        /* AÇILIR PROFİL MENÜSÜ */
-        .profile-menu { 
-            display: none; position: fixed; top: 50px; right: 15px; width: 280px; 
-            background: var(--menu-bg); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 3000; padding: 10px 0;
-        }
-        .menu-header { padding: 15px; display: flex; gap: 12px; border-bottom: 1px solid #444; }
+        /* Profil Menüsü */
+        .p-menu { display: none; position: fixed; top: 55px; right: 10px; width: 280px; background: #222; border-radius: 12px; z-index: 3000; padding: 10px 0; box-shadow: 0 5px 20px rgba(0,0,0,0.8); }
         .menu-item { padding: 12px 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; font-size: 14px; }
-        .menu-item:hover { background: #3f3f3f; }
+        .menu-item:hover { background: #333; }
 
-        /* Upload Paneli */
-        .upload-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; background: #1e1e1e; padding: 25px; border-radius: 15px; z-index: 4000; border: 1px solid var(--accent); }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3500; }
-        input, textarea { width: 100%; padding: 10px; margin: 10px 0; background: #121212; border: 1px solid #333; color: white; border-radius: 5px; }
+        /* Video Oynatıcı Modal */
+        .video-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 5000; justify-content: center; align-items: center; }
+        .modal-body { width: 90%; max-width: 800px; text-align: center; }
 
-        @media (max-width: 768px) { .sidebar { display: none; } main { margin-left: 0; } .shorts-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 1000px) { .video-container { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">
-            <img src="1766565458715.jpg" alt="Logo"> BlockTube
-        </div>
-        <div class="header-icons">
-            <i class="fas fa-video upload-btn" onclick="toggleUpload()"></i>
-            <div class="profile-trigger" onclick="toggleMenu()">
-                <img id="hAvatar" src="https://www.w3schools.com/howto/img_avatar.png">
-            </div>
+        <div class="logo" onclick="location.reload()"><img src="1766565458715.jpg"> BlockTube</div>
+        <div class="profile-trigger" onclick="toggleMenu()">
+            <img src="https://www.w3schools.com/howto/img_avatar.png" id="pPic">
         </div>
     </header>
 
-    <div class="sidebar">
-        <a href="#" class="nav-item"><i class="fas fa-home"></i> Ana Sayfa</a>
-        <a href="#" class="nav-item"><i class="fas fa-bolt"></i> Shorts</a>
-        <a href="#" class="nav-item"><i class="fas fa-layer-group"></i> Abonelikler</a>
-        <hr style="border: 0.5px solid #333; margin: 10px 0;">
-        <a href="#" class="nav-item"><i class="fas fa-history"></i> Geçmiş</a>
+    <div class="p-menu" id="pMenu">
+        <div style="padding:15px; border-bottom:1px solid #333; text-align:center;">
+            <p style="font-weight:bold;">erkanozkan06</p>
+        </div>
+        <div class="menu-item" onclick="openUpload()"><i class="fas fa-upload"></i> Video Yükle</div>
+        <div class="menu-item"><i class="fas fa-user-circle"></i> Kanalınız</div>
+        <div class="menu-item" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> Çıkış</div>
     </div>
 
     <main>
-        <h3 style="margin-bottom:15px;"><i class="fas fa-bolt" style="color:red;"></i> Shorts</h3>
-        <div class="shorts-grid">
-            <div class="short-card"><img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #1</p></div>
-            <div class="short-card"><img src="https://images.unsplash.com/photo-1516245834210-c4c142787335?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #2</p></div>
-            <div class="short-card"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #3</p></div>
-            <div class="short-card"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #4</p></div>
-            <div class="short-card"><img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #5</p></div>
-            <div class="short-card"><img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #6</p></div>
-            <div class="short-card"><img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #7</p></div>
+        <div class="shorts-wrapper">
+            <div id="shortsPlace"></div>
         </div>
 
-        <h3 style="margin-top:30px;">Tavsiye Edilenler</h3>
-        <div class="video-grid" id="vGrid">
-            <div class="v-card">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg">
-                <div class="v-info"><div class="v-avatar"></div><div><h4>BlockTube'a Hoş Geldiniz</h4><p style="font-size:12px; color:#aaa;">erkanozkan06 • 1.2 Mn izlenme</p></div></div>
+        <div class="search-section">
+            <div class="search-bar">
+                <input type="text" placeholder="BlockTube'da Ara...">
+                <i class="fas fa-search" style="margin-top:10px; color:#555;"></i>
             </div>
         </div>
+
+        <div class="video-container" id="vGrid">
+            </div>
     </main>
 
-    <div class="profile-menu" id="pMenu">
-        <div class="menu-header">
-            <div class="profile-trigger"><img id="mAvatar" src="https://www.w3schools.com/howto/img_avatar.png"></div>
-            <div>
-                <p style="font-weight:bold;">erkanozkan06</p>
-                <p style="color:var(--accent); font-size:12px; cursor:pointer;" onclick="document.getElementById('fIn').click()">Profili Düzenle</p>
-                <input type="file" id="fIn" style="display:none" onchange="upAvatar(event)">
-            </div>
+    <div class="video-modal" id="vModal" onclick="closeVideo()">
+        <div class="modal-body">
+            <iframe id="player" width="100%" height="450" src="" frameborder="0" allowfullscreen></iframe>
+            <h3 id="vT" style="margin-top:15px;"></h3>
         </div>
-        <div class="menu-item"><i class="fas fa-user-circle"></i> Kanalınız</div>
-        <div class="menu-item"><i class="fas fa-play-circle"></i> Studio</div>
-        <div class="menu-item"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</div>
-    </div>
-
-    <div class="overlay" id="mask" onclick="toggleUpload()"></div>
-    <div class="upload-panel" id="uPanel">
-        <h3>Video Paylaş</h3>
-        <input type="text" id="vT" placeholder="Başlık">
-        <textarea id="vD" placeholder="Açıklama"></textarea>
-        <button style="background:var(--accent); border:none; padding:10px; width:100%; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="addVideo()">YAYINLA</button>
     </div>
 
     <script>
+        // 10 Tane Yuvarlak Shorts Oluşturma
+        const shortsGrid = document.getElementById('shortsPlace');
+        for(let i=1; i<=10; i++) {
+            shortsGrid.innerHTML += `
+                <div class="short-circle" onclick="playVideo('dQw4w9WgXcQ', 'Short #${i}')">
+                    <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=100&h=100&fit=crop">
+                    <p>Short #${i}</p>
+                </div>
+            `;
+        }
+
+        // Başlangıç Videoları (5'li Düzen)
+        const vGrid = document.getElementById('vGrid');
+        const sampleVideos = [
+            {id: 'dQw4w9WgXcQ', title: 'BlockTube Tanıtım'},
+            {id: 'aqz-KE-bpKQ', title: 'Web 3.0 Geleceği'},
+            {id: '9bZkp7q19f0', title: 'Gangnam Style Nostalji'},
+            {id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito'},
+            {id: 'JGwWNGJdvx8', title: 'Ed Sheeran - Shape of You'}
+        ];
+
+        function renderVideos() {
+            vGrid.innerHTML = '';
+            // 4 satır x 5 video = 20 video alanı
+            for(let i=0; i<20; i++) {
+                let v = sampleVideos[i % 5];
+                vGrid.innerHTML += `
+                    <div class="video-card">
+                        <button class="btn-delete" onclick="event.stopPropagation(); deleteVideo(this)">×</button>
+                        <img src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" onclick="playVideo('${v.id}', '${v.title}')">
+                        <div class="v-meta">
+                            <h4>${v.title}</h4>
+                            <p style="font-size:10px; color:#aaa;">erkanozkan06</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        renderVideos();
+
         function toggleMenu() {
             const m = document.getElementById('pMenu');
             m.style.display = m.style.display === 'block' ? 'none' : 'block';
         }
-        function toggleUpload() {
-            const p = document.getElementById('uPanel');
-            const ms = document.getElementById('mask');
-            p.style.display = p.style.display === 'block' ? 'none' : 'block';
-            ms.style.display = ms.style.display === 'block' ? 'none' : 'block';
+
+        function playVideo(id, title) {
+            document.getElementById('player').src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+            document.getElementById('vT').innerText = title;
+            document.getElementById('vModal').style.display = 'flex';
         }
-        function upAvatar(e) {
-            const u = URL.createObjectURL(e.target.files[0]);
-            document.getElementById('hAvatar').src = u;
-            document.getElementById('mAvatar').src = u;
+
+        function closeVideo() {
+            document.getElementById('vModal').style.display = 'none';
+            document.getElementById('player').src = '';
         }
-        function addVideo() {
-            const t = document.getElementById('vT').value;
-            if(!t) return;
-            const card = `<div class="v-card"><div style="width:100%; aspect-ratio:16/9; background:#333; border-radius:12px; display:flex; align-items:center; justify-content:center;">🎬</div><div class="v-info"><div class="v-avatar"></div><div><h4>${t}</h4><p style="font-size:12px; color:#aaa;">Şimdi • erkanozkan06</p></div></div></div>`;
-            document.getElementById('vGrid').innerHTML = card + document.getElementById('vGrid').innerHTML;
-            toggleUpload();
+
+        function openUpload() {
+            const title = prompt("Video Başlığı:");
+            const id = prompt("YouTube Video ID (Örn: dQw4w9WgXcQ):");
+            if(title && id) {
+                sampleVideos.unshift({id: id, title: title});
+                renderVideos();
+                alert("Video Başarıyla Yüklendi!");
+            }
+            toggleMenu();
         }
-        window.onclick = function(e) {
-            if (!e.target.closest('.profile-trigger') && !e.target.closest('.profile-menu')) {
+
+        function deleteVideo(btn) {
+            if(confirm("Bu videoyu silmek istiyor musun?")) {
+                btn.parentElement.remove();
+            }
+        }
+
+        window.onclick = (e) => {
+            if(!e.target.closest('.profile-trigger') && !e.target.closest('.p-menu')) {
                 document.getElementById('pMenu').style.display = 'none';
             }
         }
     </script>
 </body>
 </html>
+ 
