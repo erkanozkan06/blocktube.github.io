@@ -3,155 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlockTube Ultra - Premium</title>
+    <title>BlockTube Clean Edition</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-        :root { 
-            --bg: #030303; 
-            --glass: rgba(255, 255, 255, 0.05); 
-            --accent: #00d2ff; 
-            --neon-purple: #9d50bb; 
-            --live: #ff0000;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: white; overflow-x: hidden; display: flex; }
+        :root { --bg: #030303; --accent: #00d2ff; --card-bg: #111; --text: #fff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* MODER YAN MENÜ */
-        nav { width: 80px; height: 100vh; background: #000; position: fixed; left: 0; top: 0; display: flex; flex-direction: column; align-items: center; padding-top: 20px; gap: 30px; border-right: 1px solid #222; z-index: 3000; }
-        nav img.logo-img { width: 45px; height: 45px; border-radius: 12px; border: 1px solid var(--accent); margin-bottom: 20px; cursor: pointer; }
-        nav i { font-size: 22px; color: #555; cursor: pointer; transition: 0.3s; }
-        nav i:hover, nav i.active { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
+        /* HEADER */
+        header { position: fixed; top: 0; width: 100%; height: 60px; background: rgba(0,0,0,0.95); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000; border-bottom: 1px solid #222; }
+        .logo { display: flex; align-items: center; gap: 10px; color: var(--accent); font-weight: bold; font-size: 20px; cursor: pointer; }
+        .logo img { height: 35px; border-radius: 8px; }
 
-        /* ANA İÇERİK */
-        main { margin-left: 80px; width: calc(100% - 80px); padding: 25px; transition: 0.5s; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .search-container { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); padding: 12px 25px; border-radius: 40px; width: 45%; display: flex; align-items: center; backdrop-filter: blur(10px); }
-        .search-container input { background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 10px; font-size: 14px; }
+        main { padding-top: 80px; width: 95%; max-width: 1400px; margin: 0 auto; }
 
-        /* SHORTS */
-        .shorts-section { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 30px; scrollbar-width: none; }
-        .short-card { flex: 0 0 auto; width: 75px; height: 75px; position: relative; cursor: pointer; }
-        .short-card img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); padding: 2px; }
-        .live-tag { position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); background: var(--live); color: white; font-size: 9px; padding: 2px 6px; border-radius: 5px; font-weight: bold; animation: blink 1.5s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        /* 10 SHORTS (ÜSTTE YAN YANA) */
+        .shorts-container { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none; }
+        .shorts-container::-webkit-scrollbar { display: none; }
+        .short-item { flex: 0 0 auto; width: 85px; text-align: center; cursor: pointer; }
+        .short-item img { width: 75px; height: 75px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; transition: 0.3s; }
+        .short-item:hover img { transform: scale(1.1); }
+        .short-item p { font-size: 11px; margin-top: 5px; color: #aaa; }
 
-        /* VİDEO GRİD */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .card { background: var(--glass); border-radius: 15px; overflow: hidden; transition: 0.4s; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; position: relative; }
-        .card:hover { transform: translateY(-8px); border-color: var(--accent); }
-        .thumb-area { position: relative; width: 100%; aspect-ratio: 16/9; background: #111; }
-        .card img { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 2; transition: 0.3s; }
-        .card video { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 1; opacity: 0; transition: opacity 0.3s; }
-        .card:hover img { opacity: 0; }
-        .card:hover video { opacity: 1; }
+        /* SEARCH BAR */
+        .search-area { margin: 20px 0; display: flex; justify-content: center; }
+        .search-box { width: 100%; max-width: 600px; background: #1a1a1a; border: 1px solid #333; border-radius: 30px; display: flex; align-items: center; padding: 10px 20px; }
+        .search-box input { background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 10px; }
+
+        /* 5'LI VIDEO GRID */
+        .video-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-top: 10px; }
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; }
+        .card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        
+        .thumb { position: relative; width: 100%; aspect-ratio: 16/9; cursor: pointer; }
+        .thumb img { width: 100%; height: 100%; object-fit: cover; }
+        
         .card-info { padding: 12px; }
-        .card-stats { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 11px; color: #777; }
-        .sub-btn { background: var(--accent); color: #000; border: none; padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 10px; cursor: pointer; }
+        .card-info h4 { font-size: 13px; font-weight: 500; height: 36px; overflow: hidden; margin-bottom: 8px; }
+        
+        /* ETKİLEŞİM BUTONLARI */
+        .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        .btn-group { display: flex; gap: 10px; color: #888; font-size: 13px; }
+        .btn-group i { cursor: pointer; transition: 0.2s; }
+        .btn-group i:hover { color: var(--accent); }
+        .btn-group i.active { color: var(--accent); }
 
-        /* OYNATICI MODAL */
-        .player-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 5000; backdrop-filter: blur(20px); flex-direction: column; align-items: center; justify-content: center; }
-        video#mainVideo { width: 90%; max-width: 900px; border-radius: 15px; border: 1px solid var(--accent); }
-        .close-player { position: absolute; top: 20px; left: 20px; background: var(--glass); padding: 10px 20px; border-radius: 30px; cursor: pointer; }
+        /* ABONE BUTONU (YENİ SİSTEM) */
+        .sub-btn { border: none; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s; background: var(--accent); color: black; }
+        .sub-btn.unsub { background: #333; color: #aaa; }
 
-        /* PROFİL PANELİ */
-        .profile-panel { position: fixed; right: -420px; top: 0; width: 400px; height: 100vh; background: #0a0a0a; z-index: 4000; transition: 0.5s; border-left: 1px solid #333; padding: 40px; text-align: center; }
-        .profile-panel.active { right: 0; }
-        .p-avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 20px; }
+        /* MODAL */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #000; z-index: 2000; flex-direction: column; align-items: center; justify-content: center; }
+        .modal video { width: 90%; max-width: 850px; border-radius: 10px; }
+        .close { position: absolute; top: 20px; left: 20px; color: white; cursor: pointer; font-size: 18px; }
 
-        @media (max-width: 800px) { nav { width: 60px; } main { margin-left: 60px; } .profile-panel { width: 100%; right: -100%; } }
+        @media (max-width: 1200px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
 
-    <nav>
-        <img src="1766565458715.jpg" class="logo-img" onclick="location.reload()">
-        <i class="fas fa-home active"></i>
-        <i class="fas fa-fire"></i>
-        <i class="fas fa-user-circle" style="margin-top: auto; padding-bottom: 30px;" onclick="toggleProfile()"></i>
-    </nav>
+    <header>
+        <div class="logo" onclick="location.reload()"><img src="1766565458715.jpg"> BlockTube</div>
+        <div style="font-size: 13px; color: var(--accent);"><i class="fas fa-users"></i> 2.4M</div>
+    </header>
 
-    <main id="main">
-        <header>
-            <div class="search-container">
-                <i class="fas fa-search" style="color: #444;"></i>
-                <input type="text" placeholder="BlockTube'da modern bir keşfe çık...">
+    <main>
+        <div class="shorts-container" id="shortsList"></div>
+
+        <div class="search-area">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="BlockTube'da ara...">
             </div>
-            <img src="https://www.w3schools.com/howto/img_avatar.png" onclick="toggleProfile()" style="width: 40px; border-radius: 50%; border: 2px solid var(--accent); cursor: pointer;">
-        </header>
+        </div>
 
-        <div class="shorts-section" id="shortsDiv"></div>
-        <div class="grid" id="videoGrid"></div>
+        <div class="video-grid" id="videoList"></div>
     </main>
 
-    <div class="player-modal" id="playerModal">
-        <div class="close-player" onclick="closePlayer()"><i class="fas fa-arrow-left"></i> Geri Dön</div>
-        <video id="mainVideo" controls autoplay></video>
-        <h2 id="videoTitle" style="margin-top: 20px;"></h2>
-    </div>
-
-    <div class="profile-panel" id="pPanel">
-        <i class="fas fa-times" style="position: absolute; top: 25px; right: 25px; cursor: pointer;" onclick="toggleProfile()"></i>
-        <img src="https://www.w3schools.com/howto/img_avatar.png" class="p-avatar">
-        <h2>erkanozkan06</h2>
-        <p style="color: #666; margin-bottom: 30px;">Premium Kanal Sahibi</p>
-        <div style="background: var(--glass); padding: 20px; border-radius: 15px;">
-            <b>2.4M Abone</b> • <b>125 Video</b>
-        </div>
-        <button style="width: 100%; padding: 15px; border-radius: 15px; border: none; background: #ff4d4d; color: white; font-weight: bold; cursor: pointer; margin-top: 30px;">ÇIKIŞ YAP</button>
+    <div class="modal" id="videoModal">
+        <div class="close" onclick="closeVideo()"><i class="fas fa-arrow-left"></i> GERİ DÖN</div>
+        <video id="player" controls autoplay></video>
+        <h3 id="playerTitle" style="margin-top: 15px;"></h3>
     </div>
 
     <script>
-        const vData = [
-            {t: 'Modern Şehir Hayatı 4K', src: 'https://cdn.pixabay.com/vimeo/147169833/city-1158.mp4?width=1280', img: 'https://images.pexels.com/photos/313782/pexels-photo-313782.jpeg?auto=compress&w=400'},
-            {t: 'Doğa ve Huzurlu Yaşam', src: 'https://cdn.pixabay.com/vimeo/328941011/nature-22440.mp4?width=1280', img: 'https://images.pexels.com/photos/15286/pexels-photo-15286.jpeg?auto=compress&w=400'},
-            {t: 'Cyberpunk Gelecek Tasarımı', src: 'https://cdn.pixabay.com/vimeo/147171409/matrix-1184.mp4?width=1280', img: 'https://images.pexels.com/photos/1089438/pexels-photo-1089438.jpeg?auto=compress&w=400'}
+        const data = [
+            {t: 'Modern Teknoloji Dünyası', src: 'https://cdn.pixabay.com/vimeo/147169833/city-1158.mp4?width=1280', img: 'https://images.pexels.com/photos/313782/pexels-photo-313782.jpeg?auto=compress&w=400'},
+            {t: 'Doğa ve Huzur Yolculuğu', src: 'https://cdn.pixabay.com/vimeo/328941011/nature-22440.mp4?width=1280', img: 'https://images.pexels.com/photos/15286/pexels-photo-15286.jpeg?auto=compress&w=400'}
         ];
 
-        function init() {
-            const sd = document.getElementById('shortsDiv');
+        function render() {
+            // Shorts 10 adet
+            const sl = document.getElementById('shortsList');
             for(let i=1; i<=10; i++) {
-                sd.innerHTML += `<div class="short-card" onclick="playVideo('${vData[1].src}', 'Short #${i}')"><img src="${vData[1].img}"><div class="live-tag">CANLI</div></div>`;
+                sl.innerHTML += `
+                    <div class="short-item" onclick="openVideo('${data[0].src}', 'Kısa Film #${i}')">
+                        <img src="${data[0].img}">
+                        <p>Kısa #${i}</p>
+                    </div>`;
             }
 
-            const vg = document.getElementById('videoGrid');
-            for(let i=0; i<25; i++) {
-                let v = vData[i % 3];
-                vg.innerHTML += `
-                    <div class="card" onmouseenter="preview(this, true)" onmouseleave="preview(this, false)">
-                        <div class="thumb-area" onclick="playVideo('${v.src}', '${v.t}')">
-                            <img src="${v.img}"><video src="${v.src}" muted loop></video>
+            // Videolar 25 adet (5'li sıra)
+            const vl = document.getElementById('videoList');
+            for(let i=1; i<=25; i++) {
+                let v = data[i % 2];
+                vl.innerHTML += `
+                    <div class="card">
+                        <div class="thumb" onclick="openVideo('${v.src}', '${v.t} #${i}')">
+                            <img src="${v.img}">
                         </div>
                         <div class="card-info">
-                            <h4 onclick="playVideo('${v.src}', '${v.t}')">${v.t} #${i+1}</h4>
-                            <div class="card-stats"><span>1.2M İzlenme</span><button class="sub-btn" onclick="this.innerText='ABONE OLUNDU'; this.style.background='#333';">ABONE OL</button></div>
+                            <h4>${v.t} #${i}</h4>
+                            <div class="actions">
+                                <div class="btn-group">
+                                    <i class="fas fa-thumbs-up" onclick="this.classList.toggle('active')"></i>
+                                    <i class="fas fa-comment"></i>
+                                </div>
+                                <button class="sub-btn" onclick="toggleSub(this)">Abone Ol</button>
+                            </div>
                         </div>
                     </div>`;
             }
         }
 
-        function preview(card, isIn) {
-            const vid = card.querySelector('video');
-            isIn ? vid.play() : (vid.pause(), vid.currentTime = 0);
+        function toggleSub(btn) {
+            if(btn.innerText === "Abone Ol") {
+                btn.innerText = "Aboneden Çık";
+                btn.classList.add('unsub');
+            } else {
+                btn.innerText = "Abone Ol";
+                btn.classList.remove('unsub');
+            }
         }
 
-        function playVideo(src, title) {
-            document.getElementById('mainVideo').src = src;
-            document.getElementById('videoTitle').innerText = title;
-            document.getElementById('playerModal').style.display = 'flex';
+        function openVideo(src, title) {
+            document.getElementById('player').src = src;
+            document.getElementById('playerTitle').innerText = title;
+            document.getElementById('videoModal').style.display = 'flex';
         }
 
-        function closePlayer() {
-            document.getElementById('mainVideo').pause();
-            document.getElementById('playerModal').style.display = 'none';
+        function closeVideo() {
+            document.getElementById('player').pause();
+            document.getElementById('videoModal').style.display = 'none';
         }
 
-        function toggleProfile() {
-            document.getElementById('pPanel').classList.toggle('active');
-            document.getElementById('main').style.filter = document.getElementById('pPanel').classList.contains('active') ? "blur(10px)" : "none";
-        }
-
-        init();
+        render();
     </script>
 </body>
 </html>
