@@ -3,102 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlockTube - Kanal Yönetimi</title>
+    <title>BlockTube Premium</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --bg: #0f0f0f; --sidebar: #0f0f0f; --hover: #272727; --text: #f1f1f1; --accent: #00d2ff; }
+        :root { --bg: #0f0f0f; --menu-bg: #282828; --text: #f1f1f1; --accent: #00d2ff; --hover: #272727; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Roboto, Arial, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); overflow-x: hidden; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        header { position: fixed; top: 0; width: 100%; height: 56px; background: var(--bg); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 1000; }
-        .logo { display: flex; align-items: center; cursor: pointer; }
-        .logo img { height: 35px; margin-right: 10px; border-radius: 5px; }
+        /* Üst Menü */
+        header { position: fixed; top: 0; width: 100%; height: 56px; background: var(--bg); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 2000; }
+        .logo { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: bold; font-size: 18px; }
+        .logo img { height: 32px; border-radius: 5px; }
+        
+        .header-icons { display: flex; align-items: center; gap: 20px; }
+        .upload-btn { cursor: pointer; font-size: 20px; color: var(--text); }
+        .profile-trigger { width: 34px; height: 34px; border-radius: 50%; background: #3a7bd5; cursor: pointer; overflow: hidden; border: 1px solid #444; }
+        .profile-trigger img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Profil ve Kanal Butonları */
-        .user-actions { display: flex; align-items: center; gap: 15px; }
-        .btn-kanal { background: var(--accent); color: black; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; }
-        .profile-pic-container { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; cursor: pointer; border: 2px solid var(--accent); }
-        .profile-pic-container img { width: 100%; height: 100%; object-fit: cover; }
-
-        .sidebar { position: fixed; left: 0; top: 56px; width: 240px; height: 100vh; background: var(--sidebar); padding: 12px; border-right: 1px solid #333; }
-        .nav-item { display: flex; align-items: center; padding: 10px 12px; border-radius: 10px; color: white; text-decoration: none; font-size: 14px; }
+        /* Yan Menü */
+        .sidebar { position: fixed; left: 0; top: 56px; width: 240px; height: 100vh; background: var(--bg); padding: 12px; }
+        .nav-item { display: flex; align-items: center; padding: 10px 12px; border-radius: 10px; color: white; text-decoration: none; font-size: 14px; transition: 0.2s; }
         .nav-item:hover { background: var(--hover); }
         .nav-item i { margin-right: 20px; font-size: 20px; width: 24px; text-align: center; }
 
+        /* Ana İçerik Alanı */
         main { margin-left: 240px; padding: 80px 24px; }
-        
-        /* Modal Stilleri */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); }
-        .modal-content { background: #1e1e1e; margin: 10% auto; padding: 30px; border-radius: 20px; width: 350px; text-align: center; border: 1px solid var(--accent); }
-        input[type="file"] { margin: 20px 0; color: white; }
-        input[type="text"] { width: 100%; padding: 10px; margin: 10px 0; background: #333; border: none; color: white; border-radius: 5px; }
-        
-        @media (max-width: 768px) { .sidebar { display: none; } main { margin-left: 0; } }
+
+        /* Shorts Bölümü */
+        .shorts-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; overflow-x: auto; padding-bottom: 20px; }
+        .short-card img { width: 100%; border-radius: 12px; aspect-ratio: 9/16; object-fit: cover; transition: 0.3s; }
+        .short-card:hover img { transform: scale(1.03); box-shadow: 0 0 15px var(--accent); }
+
+        /* Video Paylaşımları (Grid) */
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 20px; }
+        .v-card { cursor: pointer; }
+        .v-card img { width: 100%; border-radius: 12px; aspect-ratio: 16/9; object-fit: cover; }
+        .v-info { display: flex; gap: 12px; margin-top: 12px; }
+        .v-avatar { width: 36px; height: 36px; border-radius: 50%; background: #444; flex-shrink: 0; }
+
+        /* AÇILIR PROFİL MENÜSÜ */
+        .profile-menu { 
+            display: none; position: fixed; top: 50px; right: 15px; width: 280px; 
+            background: var(--menu-bg); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 3000; padding: 10px 0;
+        }
+        .menu-header { padding: 15px; display: flex; gap: 12px; border-bottom: 1px solid #444; }
+        .menu-item { padding: 12px 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; font-size: 14px; }
+        .menu-item:hover { background: #3f3f3f; }
+
+        /* Upload Paneli */
+        .upload-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; background: #1e1e1e; padding: 25px; border-radius: 15px; z-index: 4000; border: 1px solid var(--accent); }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3500; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; background: #121212; border: 1px solid #333; color: white; border-radius: 5px; }
+
+        @media (max-width: 768px) { .sidebar { display: none; } main { margin-left: 0; } .shorts-grid { grid-template-columns: repeat(4, 1fr); } }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">
-            <img src="1766565458715.jpg" alt="Logo">
-            <span>BlockTube</span>
+            <img src="1766565458715.jpg" alt="Logo"> BlockTube
         </div>
-        
-        <div class="user-actions">
-            <button class="btn-kanal" onclick="openKanalModal()">+ Kanal Aç</button>
-            <div class="profile-pic-container" onclick="document.getElementById('profileInput').click()">
-                <img id="userAvatar" src="https://www.w3schools.com/howto/img_avatar.png" alt="Profil">
+        <div class="header-icons">
+            <i class="fas fa-video upload-btn" onclick="toggleUpload()"></i>
+            <div class="profile-trigger" onclick="toggleMenu()">
+                <img id="hAvatar" src="https://www.w3schools.com/howto/img_avatar.png">
             </div>
-            <input type="file" id="profileInput" style="display:none" onchange="loadAvatar(event)">
         </div>
     </header>
 
     <div class="sidebar">
-        <div id="kanalBilgi" style="padding: 10px; text-align: center; display: none;">
-            <p style="color: var(--accent); font-weight: bold;" id="displayKanalAdi"></p>
-            <hr style="margin: 10px 0; border-color: #333;">
-        </div>
         <a href="#" class="nav-item"><i class="fas fa-home"></i> Ana Sayfa</a>
         <a href="#" class="nav-item"><i class="fas fa-bolt"></i> Shorts</a>
-        <a href="#" class="nav-item"><i class="fas fa-video"></i> Videolarım</a>
+        <a href="#" class="nav-item"><i class="fas fa-layer-group"></i> Abonelikler</a>
+        <hr style="border: 0.5px solid #333; margin: 10px 0;">
+        <a href="#" class="nav-item"><i class="fas fa-history"></i> Geçmiş</a>
     </div>
 
     <main>
-        <h2 id="welcomeText">BlockTube'a Hoş Geldin, Gezgin!</h2>
-        <p style="color: #aaa; margin-top: 10px;">Kendi kanalını açmak için sağ üstteki butonu kullan.</p>
+        <h3 style="margin-bottom:15px;"><i class="fas fa-bolt" style="color:red;"></i> Shorts</h3>
+        <div class="shorts-grid">
+            <div class="short-card"><img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #1</p></div>
+            <div class="short-card"><img src="https://images.unsplash.com/photo-1516245834210-c4c142787335?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #2</p></div>
+            <div class="short-card"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #3</p></div>
+            <div class="short-card"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #4</p></div>
+            <div class="short-card"><img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #5</p></div>
+            <div class="short-card"><img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #6</p></div>
+            <div class="short-card"><img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=200&h=350&fit=crop"><p style="font-size:12px; margin-top:5px;">Trend #7</p></div>
+        </div>
+
+        <h3 style="margin-top:30px;">Tavsiye Edilenler</h3>
+        <div class="video-grid" id="vGrid">
+            <div class="v-card">
+                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg">
+                <div class="v-info"><div class="v-avatar"></div><div><h4>BlockTube'a Hoş Geldiniz</h4><p style="font-size:12px; color:#aaa;">erkanozkan06 • 1.2 Mn izlenme</p></div></div>
+            </div>
+        </div>
     </main>
 
-    <div id="kanalModal" class="modal">
-        <div class="modal-content">
-            <h3 style="color: var(--accent);">Yeni Kanal Oluştur</h3>
-            <input type="text" id="kanalAdiInput" placeholder="Kanal Adınızı Yazın...">
-            <button class="btn-kanal" style="width: 100%; margin-top: 10px;" onclick="kanalOlustur()">Kanalı Aktifleştir</button>
-            <p style="font-size: 12px; color: #888; margin-top: 15px; cursor: pointer;" onclick="closeKanalModal()">Vazgeç</p>
+    <div class="profile-menu" id="pMenu">
+        <div class="menu-header">
+            <div class="profile-trigger"><img id="mAvatar" src="https://www.w3schools.com/howto/img_avatar.png"></div>
+            <div>
+                <p style="font-weight:bold;">erkanozkan06</p>
+                <p style="color:var(--accent); font-size:12px; cursor:pointer;" onclick="document.getElementById('fIn').click()">Profili Düzenle</p>
+                <input type="file" id="fIn" style="display:none" onchange="upAvatar(event)">
+            </div>
         </div>
+        <div class="menu-item"><i class="fas fa-user-circle"></i> Kanalınız</div>
+        <div class="menu-item"><i class="fas fa-play-circle"></i> Studio</div>
+        <div class="menu-item"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</div>
+    </div>
+
+    <div class="overlay" id="mask" onclick="toggleUpload()"></div>
+    <div class="upload-panel" id="uPanel">
+        <h3>Video Paylaş</h3>
+        <input type="text" id="vT" placeholder="Başlık">
+        <textarea id="vD" placeholder="Açıklama"></textarea>
+        <button style="background:var(--accent); border:none; padding:10px; width:100%; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="addVideo()">YAYINLA</button>
     </div>
 
     <script>
-        // Profil resmi yükleme
-        function loadAvatar(event) {
-            var output = document.getElementById('userAvatar');
-            output.src = URL.createObjectURL(event.target.files[0]);
+        function toggleMenu() {
+            const m = document.getElementById('pMenu');
+            m.style.display = m.style.display === 'block' ? 'none' : 'block';
         }
-
-        // Kanal Açma İşlemleri
-        function openKanalModal() { document.getElementById('kanalModal').style.display = 'block'; }
-        function closeKanalModal() { document.getElementById('kanalModal').style.display = 'none'; }
-
-        function kanalOlustur() {
-            var ad = document.getElementById('kanalAdiInput').value;
-            if(ad) {
-                document.getElementById('displayKanalAdi').innerText = "📺 " + ad;
-                document.getElementById('kanalBilgi').style.display = 'block';
-                document.getElementById('welcomeText').innerText = ad + " Kanalına Hoş Geldin!";
-                closeKanalModal();
-                alert("Tebrikler! " + ad + " kanalı başarıyla açıldı.");
+        function toggleUpload() {
+            const p = document.getElementById('uPanel');
+            const ms = document.getElementById('mask');
+            p.style.display = p.style.display === 'block' ? 'none' : 'block';
+            ms.style.display = ms.style.display === 'block' ? 'none' : 'block';
+        }
+        function upAvatar(e) {
+            const u = URL.createObjectURL(e.target.files[0]);
+            document.getElementById('hAvatar').src = u;
+            document.getElementById('mAvatar').src = u;
+        }
+        function addVideo() {
+            const t = document.getElementById('vT').value;
+            if(!t) return;
+            const card = `<div class="v-card"><div style="width:100%; aspect-ratio:16/9; background:#333; border-radius:12px; display:flex; align-items:center; justify-content:center;">🎬</div><div class="v-info"><div class="v-avatar"></div><div><h4>${t}</h4><p style="font-size:12px; color:#aaa;">Şimdi • erkanozkan06</p></div></div></div>`;
+            document.getElementById('vGrid').innerHTML = card + document.getElementById('vGrid').innerHTML;
+            toggleUpload();
+        }
+        window.onclick = function(e) {
+            if (!e.target.closest('.profile-trigger') && !e.target.closest('.profile-menu')) {
+                document.getElementById('pMenu').style.display = 'none';
             }
         }
     </script>
-
 </body>
 </html>
