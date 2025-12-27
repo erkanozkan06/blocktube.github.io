@@ -3,136 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BlockTube Pro - Scroll Fix</title>
+    <title>BlockTube Creator Hub</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --bg: #000; --accent: #00d2ff; --card-bg: #111; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background: var(--bg); color: white; }
+        :root { --bg: #000; --accent: #00d2ff; --card-bg: #111; --glass: rgba(255, 255, 255, 0.05); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: white; overflow-x: hidden; }
 
         /* HEADER */
         header { position: fixed; top: 0; width: 100%; height: 60px; background: #000; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; z-index: 1000; border-bottom: 1px solid #222; }
-        .logo { color: var(--accent); font-weight: bold; font-size: 20px; display: flex; align-items: center; gap: 8px; }
-        .logo img { height: 30px; border-radius: 5px; }
+        .logo { color: var(--accent); font-weight: bold; font-size: 20px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .logo img { height: 32px; border-radius: 6px; border: 1px solid var(--accent); }
 
-        main { padding: 75px 10px 20px 10px; max-width: 1400px; margin: 0 auto; }
+        main { padding: 75px 8px 20px 8px; max-width: 1600px; margin: 0 auto; transition: 0.3s; }
 
-        /* SHORTS ÜST LİSTE */
-        .shorts-nav { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
+        /* SHORTS & SEARCH */
+        .shorts-nav { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
         .shorts-nav::-webkit-scrollbar { display: none; }
-        .s-circle { flex: 0 0 auto; width: 75px; text-align: center; cursor: pointer; }
-        .s-circle img { width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; }
-        .s-circle p { font-size: 10px; margin-top: 4px; color: #888; white-space: nowrap; overflow: hidden; }
-
-        /* SEARCH */
-        .search-bar { width: 100%; max-width: 500px; margin: 10px auto 25px auto; background: #1a1a1a; border-radius: 20px; padding: 10px 15px; display: flex; align-items: center; border: 1px solid #333; }
+        .s-circle { flex: 0 0 auto; width: 70px; text-align: center; cursor: pointer; }
+        .s-circle img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; }
+        .search-bar { background: #1a1a1a; border-radius: 25px; padding: 10px 18px; display: flex; align-items: center; border: 1px solid #333; margin-bottom: 20px; }
         .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 10px; }
 
-        /* 5'Lİ VİDEO GRİD */
-        .video-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
-        .v-card { background: var(--card-bg); border-radius: 10px; overflow: hidden; transition: 0.3s; }
-        .v-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; cursor: pointer; }
+        /* 4'LÜ GRID */
+        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .v-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #222; }
+        .thumb { position: relative; width: 100%; aspect-ratio: 16/9; cursor: pointer; }
+        .thumb img { width: 100%; height: 100%; object-fit: cover; }
         .v-info { padding: 10px; }
-        .v-info h4 { font-size: 12px; font-weight: 500; height: 32px; overflow: hidden; }
-        .v-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
-        .sub-btn { background: var(--accent); color: black; border: none; padding: 4px 10px; border-radius: 15px; font-size: 10px; font-weight: bold; cursor: pointer; }
-        .sub-btn.active { background: #333; color: #aaa; }
+        .v-info h4 { font-size: 11px; font-weight: 500; height: 30px; overflow: hidden; margin-bottom: 5px; }
+        .stats-line { font-size: 9px; color: #888; display: flex; gap: 8px; margin-bottom: 8px; }
+        .v-actions { display: flex; justify-content: space-between; align-items: center; }
+        .action-btns { display: flex; gap: 12px; font-size: 13px; color: #666; }
+        .action-btns i { cursor: pointer; }
+        .action-btns i:hover, .action-btns i.active { color: var(--accent); }
 
-        /* SHORTS FULLSCREEN OVERLAY */
-        #shortsOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; }
-        .shorts-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
-        .shorts-container::-webkit-scrollbar { display: none; }
-        .short-slide { height: 100vh; width: 100%; scroll-snap-align: start; position: relative; display: flex; align-items: center; justify-content: center; }
-        .short-slide video { height: 100%; width: 100%; object-fit: cover; max-width: 500px; }
-        
-        .close-btn { position: absolute; top: 20px; left: 20px; z-index: 10000; color: white; background: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 20px; cursor: pointer; }
-        .short-ui { position: absolute; bottom: 50px; left: 20px; text-shadow: 0 2px 5px #000; pointer-events: none; }
+        /* PROFIL PANELİ */
+        #profilePanel { position: fixed; right: -350px; top: 0; width: 320px; height: 100vh; background: #0a0a0a; z-index: 2000; transition: 0.4s; padding: 25px; border-left: 1px solid #222; }
+        #profilePanel.active { right: 0; }
+        .p-header { text-align: center; margin-bottom: 30px; }
+        .p-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 10px; }
+        .wallet { background: var(--glass); padding: 15px; border-radius: 12px; margin: 20px 0; text-align: center; }
+        .p-btn { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--accent); color: #000; font-weight: bold; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .p-btn.upload { background: #fff; }
 
-        @media (max-width: 1100px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
+        /* MESAJ KUTUSU */
+        #chatBox { display: none; position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; background: #111; border: 1px solid var(--accent); border-radius: 15px; z-index: 3000; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .chat-header { background: #1a1a1a; padding: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
+        .chat-content { flex-grow: 1; padding: 15px; font-size: 13px; overflow-y: auto; color: #aaa; }
+        .chat-input { padding: 10px; display: flex; border-top: 1px solid #222; }
+        .chat-input input { background: #000; border: 1px solid #333; color: white; padding: 8px; border-radius: 5px; width: 100%; outline: none; }
+
+        @media (max-width: 800px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo" onclick="location.reload()"><img src="1766565458715.jpg"> BlockTube</div>
-    <div onclick="alert('Profil yakında!')"><i class="fas fa-user-circle fa-lg"></i></div>
+    <div style="display: flex; gap: 20px; align-items: center;">
+        <i class="fas fa-comment-dots fa-lg" onclick="toggleChat()" style="cursor:pointer"></i>
+        <img src="https://www.w3schools.com/howto/img_avatar.png" onclick="toggleProfile()" style="width:35px; border-radius:50%; border:2px solid var(--accent); cursor:pointer">
+    </div>
 </header>
 
-<main>
+<main id="mainContent">
     <div class="shorts-nav" id="sNav"></div>
-    <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Ara..."></div>
+    <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="İçerik ara..."></div>
     <div class="video-grid" id="vGrid"></div>
 </main>
 
-<div id="shortsOverlay">
-    <div class="close-btn" onclick="closeShorts()">Kapat</div>
-    <div class="shorts-container" id="sWrapper"></div>
+<div id="profilePanel">
+    <div class="p-header">
+        <i class="fas fa-times" style="float:right; cursor:pointer" onclick="toggleProfile()"></i>
+        <img src="https://www.w3schools.com/howto/img_avatar.png" class="p-avatar">
+        <h3>erkanozkan06</h3>
+        <p style="font-size: 11px; color: #555;">Kanal Kimliği: #BT9982</p>
+    </div>
+    
+    <div class="wallet">
+        <p style="font-size: 11px; color: #888;">Hesap Bakiyesi</p>
+        <h2 style="color: var(--accent);">0.00 TL</h2>
+    </div>
+
+    <button class="p-btn upload"><i class="fas fa-cloud-upload-alt"></i> Video Yükle</button>
+    <button class="p-btn"><i class="fas fa-chart-line"></i> Analizler</button>
+    <button class="p-btn" style="background:#222; color:#fff;"><i class="fas fa-cog"></i> Ayarlar</button>
+</div>
+
+<div id="chatBox">
+    <div class="chat-header">
+        <span><i class="fas fa-envelope"></i> Mesajlar</span>
+        <i class="fas fa-times" style="cursor:pointer; color: #ff4d4d;" onclick="toggleChat()"></i>
+    </div>
+    <div class="chat-content">
+        <p>Destek: Merhaba kanka, BlockTube'a hoş geldin! Herhangi bir videoda sorun yaşarsan buradan yazabilirsin.</p>
+    </div>
+    <div class="chat-input">
+        <input type="text" placeholder="Mesaj yaz...">
+    </div>
 </div>
 
 <script>
     const videos = [
-        {t: 'Modern City', src: 'https://cdn.pixabay.com/vimeo/147169833/city-1158.mp4?width=1280', img: 'https://images.pexels.com/photos/313782/pexels-photo-313782.jpeg?auto=compress&w=400'},
-        {t: 'Nature Peace', src: 'https://cdn.pixabay.com/vimeo/328941011/nature-22440.mp4?width=1280', img: 'https://images.pexels.com/photos/15286/pexels-photo-15286.jpeg?auto=compress&w=400'},
-        {t: 'Cyber Matrix', src: 'https://cdn.pixabay.com/vimeo/147171409/matrix-1184.mp4?width=1280', img: 'https://images.pexels.com/photos/1089438/pexels-photo-1089438.jpeg?auto=compress&w=400'}
+        {t: 'Cyberpunk Gelecek', src: 'https://cdn.pixabay.com/vimeo/459039343/cyberpunk-50603.mp4?width=1280', img: 'https://images.pexels.com/photos/2524368/pexels-photo-2524368.jpeg?auto=compress&w=400'},
+        {t: 'Neon Gece Sürüşü', src: 'https://cdn.pixabay.com/vimeo/370213192/neon-30114.mp4?width=1280', img: 'https://images.pexels.com/photos/1089438/pexels-photo-1089438.jpeg?auto=compress&w=400'},
+        {t: 'Modern Tasarım 2026', src: 'https://cdn.pixabay.com/vimeo/147169833/city-1158.mp4?width=1280', img: 'https://images.pexels.com/photos/313782/pexels-photo-313782.jpeg?auto=compress&w=400'}
     ];
 
-    function loadContent() {
-        // Shorts listesi (10 adet)
+    function load() {
+        // Shorts
         const sn = document.getElementById('sNav');
         for(let i=0; i<10; i++) {
-            sn.innerHTML += `
-                <div class="s-circle" onclick="openShorts(${i})">
-                    <img src="${videos[i%3].img}">
-                    <p>Shorts #${i+1}</p>
-                </div>`;
+            sn.innerHTML += `<div class="s-circle"><img src="${videos[i%3].img}"><p>Shorts #${i+1}</p></div>`;
         }
 
-        // Ana Videolar (25 adet)
+        // 40 Video (10 Sıra x 4 Sütun)
         const vg = document.getElementById('vGrid');
-        for(let i=1; i<=25; i++) {
+        for(let i=1; i<=40; i++) {
             let v = videos[i%3];
+            let views = (Math.random() * 50 + 1).toFixed(1); // 1.0K - 50.0K arası rastgele
             vg.innerHTML += `
                 <div class="v-card">
-                    <img src="${v.img}" onclick="alert('Video oynatıcı açılıyor...')">
+                    <div class="thumb"><img src="${v.img}"></div>
                     <div class="v-info">
                         <h4>${v.t} #${i}</h4>
+                        <div class="stats-line">
+                            <span>${views}B İzlenme</span>
+                            <span>${i} saat önce</span>
+                        </div>
                         <div class="v-actions">
-                            <i class="far fa-heart" onclick="this.classList.toggle('fas'); this.style.color='red'"></i>
-                            <button class="sub-btn" onclick="toggleSub(this)">Abone Ol</button>
+                            <div class="action-btns">
+                                <i class="far fa-heart" onclick="this.classList.toggle('fas'); this.style.color=this.classList.contains('fas')?'red':''"></i>
+                                <i class="far fa-comment" onclick="toggleChat()"></i>
+                            </div>
+                            <button style="border:none; background:var(--accent); font-size:9px; font-weight:bold; padding:4px 8px; border-radius:5px; cursor:pointer;" onclick="this.innerText='Aboneden Çık'; this.style.background='#333'; this.style.color='#aaa';">Abone Ol</button>
                         </div>
                     </div>
                 </div>`;
         }
     }
 
-    function toggleSub(btn) {
-        btn.classList.toggle('active');
-        btn.innerText = btn.classList.contains('active') ? 'Aboneden Çık' : 'Abone Ol';
+    function toggleProfile() {
+        const panel = document.getElementById('profilePanel');
+        panel.classList.toggle('active');
+        document.getElementById('mainContent').style.opacity = panel.classList.contains('active') ? "0.3" : "1";
     }
 
-    function openShorts(idx) {
-        const sw = document.getElementById('sWrapper');
-        sw.innerHTML = '';
-        videos.concat(videos, videos, [videos[0]]).slice(0, 10).forEach((v, i) => {
-            sw.innerHTML += `
-                <div class="short-slide">
-                    <video src="${v.src}" loop autoplay playsinline></video>
-                    <div class="short-ui"><h3>Kısa Film #${i+1}</h3><p>@blocktube</p></div>
-                </div>`;
-        });
-        document.getElementById('shortsOverlay').style.display = 'block';
-        document.body.style.overflow = 'hidden';
-        sw.children[idx].scrollIntoView();
+    function toggleChat() {
+        const chat = document.getElementById('chatBox');
+        chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
     }
 
-    function closeShorts() {
-        document.getElementById('shortsOverlay').style.display = 'none';
-        document.body.style.overflow = 'auto';
-        const vids = document.querySelectorAll('#sWrapper video');
-        vids.forEach(v => v.pause());
-    }
-
-    loadContent();
+    load();
 </script>
 </body>
 </html>
