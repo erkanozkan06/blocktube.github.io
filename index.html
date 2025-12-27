@@ -3,56 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BlockTube Creator Hub</title>
+    <title>BlockTube Cinema - Full Live</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --bg: #000; --accent: #00d2ff; --card-bg: #111; --glass: rgba(255, 255, 255, 0.05); }
+        :root { --bg: #000; --accent: #00d2ff; --card-bg: #111; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: var(--bg); color: white; overflow-x: hidden; }
 
-        /* HEADER */
-        header { position: fixed; top: 0; width: 100%; height: 60px; background: #000; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; z-index: 1000; border-bottom: 1px solid #222; }
+        header { position: fixed; top: 0; width: 100%; height: 60px; background: rgba(0,0,0,0.9); display: flex; justify-content: space-between; align-items: center; padding: 0 15px; z-index: 1000; border-bottom: 1px solid #222; backdrop-filter: blur(10px); }
         .logo { color: var(--accent); font-weight: bold; font-size: 20px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
         .logo img { height: 32px; border-radius: 6px; border: 1px solid var(--accent); }
 
-        main { padding: 75px 8px 20px 8px; max-width: 1600px; margin: 0 auto; transition: 0.3s; }
+        main { padding: 75px 8px 20px 8px; max-width: 1600px; margin: 0 auto; }
 
-        /* SHORTS & SEARCH */
-        .shorts-nav { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
+        /* SHORTS DÜZENİ */
+        .shorts-nav { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
         .shorts-nav::-webkit-scrollbar { display: none; }
         .s-circle { flex: 0 0 auto; width: 70px; text-align: center; cursor: pointer; }
-        .s-circle img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; }
+        .s-circle img { width: 62px; height: 62px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; background: #222; }
+
         .search-bar { background: #1a1a1a; border-radius: 25px; padding: 10px 18px; display: flex; align-items: center; border: 1px solid #333; margin-bottom: 20px; }
         .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 10px; }
 
-        /* 4'LÜ GRID */
+        /* 4'LÜ SİNEMATİK GRİD */
         .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .v-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #222; }
-        .thumb { position: relative; width: 100%; aspect-ratio: 16/9; cursor: pointer; }
-        .thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .v-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; }
+        .v-card:hover { border-color: var(--accent); transform: scale(1.02); }
+        .thumb { position: relative; width: 100%; aspect-ratio: 16/9; cursor: pointer; overflow: hidden; }
+        .thumb img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        
         .v-info { padding: 10px; }
-        .v-info h4 { font-size: 11px; font-weight: 500; height: 30px; overflow: hidden; margin-bottom: 5px; }
-        .stats-line { font-size: 9px; color: #888; display: flex; gap: 8px; margin-bottom: 8px; }
-        .v-actions { display: flex; justify-content: space-between; align-items: center; }
-        .action-btns { display: flex; gap: 12px; font-size: 13px; color: #666; }
-        .action-btns i { cursor: pointer; }
-        .action-btns i:hover, .action-btns i.active { color: var(--accent); }
+        .v-info h4 { font-size: 11px; font-weight: 500; height: 32px; overflow: hidden; color: #eee; }
+        .stats { font-size: 9px; color: #666; margin: 5px 0; }
+        .v-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+        .icons { display: flex; gap: 12px; color: #555; font-size: 14px; }
+        .icons i:hover { color: var(--accent); }
 
-        /* PROFIL PANELİ */
-        #profilePanel { position: fixed; right: -350px; top: 0; width: 320px; height: 100vh; background: #0a0a0a; z-index: 2000; transition: 0.4s; padding: 25px; border-left: 1px solid #222; }
-        #profilePanel.active { right: 0; }
-        .p-header { text-align: center; margin-bottom: 30px; }
-        .p-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 10px; }
-        .wallet { background: var(--glass); padding: 15px; border-radius: 12px; margin: 20px 0; text-align: center; }
-        .p-btn { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--accent); color: #000; font-weight: bold; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .p-btn.upload { background: #fff; }
-
-        /* MESAJ KUTUSU */
-        #chatBox { display: none; position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; background: #111; border: 1px solid var(--accent); border-radius: 15px; z-index: 3000; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .chat-header { background: #1a1a1a; padding: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
-        .chat-content { flex-grow: 1; padding: 15px; font-size: 13px; overflow-y: auto; color: #aaa; }
-        .chat-input { padding: 10px; display: flex; border-top: 1px solid #222; }
-        .chat-input input { background: #000; border: 1px solid #333; color: white; padding: 8px; border-radius: 5px; width: 100%; outline: none; }
+        /* PROFİL & CHAT */
+        #pPanel { position: fixed; right: -350px; top: 0; width: 320px; height: 100vh; background: #0a0a0a; z-index: 2000; transition: 0.4s; padding: 25px; border-left: 1px solid #222; }
+        #pPanel.active { right: 0; }
+        #chatBox { display: none; position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; background: #111; border: 1px solid var(--accent); border-radius: 15px; z-index: 3000; flex-direction: column; box-shadow: 0 10px 30px #000; }
+        .chat-h { background: #1a1a1a; padding: 10px; display: flex; justify-content: space-between; border-bottom: 1px solid #222; }
 
         @media (max-width: 800px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
@@ -61,83 +52,77 @@
 
 <header>
     <div class="logo" onclick="location.reload()"><img src="1766565458715.jpg"> BlockTube</div>
-    <div style="display: flex; gap: 20px; align-items: center;">
-        <i class="fas fa-comment-dots fa-lg" onclick="toggleChat()" style="cursor:pointer"></i>
-        <img src="https://www.w3schools.com/howto/img_avatar.png" onclick="toggleProfile()" style="width:35px; border-radius:50%; border:2px solid var(--accent); cursor:pointer">
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <i class="fas fa-comment-dots" onclick="toggleChat()" style="cursor:pointer"></i>
+        <img src="https://images.pexels.com/users/avatars/223337/pexels-user-223337.jpeg?auto=compress&w=50" onclick="toggleProfile()" style="width:35px; border-radius:50%; border:2px solid var(--accent); cursor:pointer">
     </div>
 </header>
 
-<main id="mainContent">
+<main id="main">
     <div class="shorts-nav" id="sNav"></div>
-    <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="İçerik ara..."></div>
+    <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Sinema, teknoloji veya doğa ara..."></div>
     <div class="video-grid" id="vGrid"></div>
 </main>
 
-<div id="profilePanel">
-    <div class="p-header">
-        <i class="fas fa-times" style="float:right; cursor:pointer" onclick="toggleProfile()"></i>
-        <img src="https://www.w3schools.com/howto/img_avatar.png" class="p-avatar">
-        <h3>erkanozkan06</h3>
-        <p style="font-size: 11px; color: #555;">Kanal Kimliği: #BT9982</p>
+<div id="pPanel">
+    <i class="fas fa-times" style="float:right; cursor:pointer" onclick="toggleProfile()"></i>
+    <div style="text-align:center; margin-top:20px;">
+        <img src="https://images.pexels.com/users/avatars/223337/pexels-user-223337.jpeg?auto=compress&w=100" style="width:80px; border-radius:50%; border:3px solid var(--accent);">
+        <h3 style="margin-top:10px;">erkanozkan06</h3>
+        <div style="background:#1a1a1a; padding:15px; border-radius:10px; margin:20px 0;">
+            <p style="font-size:10px; color:#555;">Kullanılabilir Bakiye</p>
+            <h2 style="color:var(--accent);">₺250.00</h2>
+        </div>
+        <button style="width:100%; padding:12px; border-radius:8px; border:none; background:#fff; font-weight:bold; margin-bottom:10px;"><i class="fas fa-plus"></i> Video Yükle</button>
+        <button style="width:100%; padding:12px; border-radius:8px; border:none; background:var(--accent); font-weight:bold;">Hesap Ayarları</button>
     </div>
-    
-    <div class="wallet">
-        <p style="font-size: 11px; color: #888;">Hesap Bakiyesi</p>
-        <h2 style="color: var(--accent);">0.00 TL</h2>
-    </div>
-
-    <button class="p-btn upload"><i class="fas fa-cloud-upload-alt"></i> Video Yükle</button>
-    <button class="p-btn"><i class="fas fa-chart-line"></i> Analizler</button>
-    <button class="p-btn" style="background:#222; color:#fff;"><i class="fas fa-cog"></i> Ayarlar</button>
 </div>
 
 <div id="chatBox">
-    <div class="chat-header">
-        <span><i class="fas fa-envelope"></i> Mesajlar</span>
-        <i class="fas fa-times" style="cursor:pointer; color: #ff4d4d;" onclick="toggleChat()"></i>
-    </div>
-    <div class="chat-content">
-        <p>Destek: Merhaba kanka, BlockTube'a hoş geldin! Herhangi bir videoda sorun yaşarsan buradan yazabilirsin.</p>
-    </div>
-    <div class="chat-input">
-        <input type="text" placeholder="Mesaj yaz...">
-    </div>
+    <div class="chat-h"><span>Mesajlar</span><i class="fas fa-times" onclick="toggleChat()" style="color:red; cursor:pointer"></i></div>
+    <div style="flex-grow:1; padding:15px; color:#888; font-size:12px;">Henüz yeni mesajın yok kanka.</div>
+    <div style="padding:10px; border-top:1px solid #222;"><input type="text" placeholder="Yaz..." style="width:100%; background:#000; border:1px solid #333; color:white; padding:5px; border-radius:5px;"></div>
 </div>
 
 <script>
-    const videos = [
-        {t: 'Cyberpunk Gelecek', src: 'https://cdn.pixabay.com/vimeo/459039343/cyberpunk-50603.mp4?width=1280', img: 'https://images.pexels.com/photos/2524368/pexels-photo-2524368.jpeg?auto=compress&w=400'},
-        {t: 'Neon Gece Sürüşü', src: 'https://cdn.pixabay.com/vimeo/370213192/neon-30114.mp4?width=1280', img: 'https://images.pexels.com/photos/1089438/pexels-photo-1089438.jpeg?auto=compress&w=400'},
-        {t: 'Modern Tasarım 2026', src: 'https://cdn.pixabay.com/vimeo/147169833/city-1158.mp4?width=1280', img: 'https://images.pexels.com/photos/313782/pexels-photo-313782.jpeg?auto=compress&w=400'}
+    // Gerçek ve Çalışan Anonim Sinematik Videolar & Resimler
+    const videoData = [
+        {t: 'Sinematik Şehir Turu 4K', src: 'https://cdn.pixabay.com/vimeo/147169833/city-1158.mp4?width=1280', img: 'https://images.pexels.com/photos/313782/pexels-photo-313782.jpeg?auto=compress&w=500'},
+        {t: 'Derin Uzay Yolculuğu', src: 'https://cdn.pixabay.com/vimeo/147171409/matrix-1184.mp4?width=1280', img: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg?auto=compress&w=500'},
+        {t: 'Huzurlu Orman Akışı', src: 'https://cdn.pixabay.com/vimeo/328941011/nature-22440.mp4?width=1280', img: 'https://images.pexels.com/photos/15286/pexels-photo-15286.jpeg?auto=compress&w=500'},
+        {t: 'Cyber Neon Sokaklar', src: 'https://cdn.pixabay.com/vimeo/459039343/cyberpunk-50603.mp4?width=1280', img: 'https://images.pexels.com/photos/2524368/pexels-photo-2524368.jpeg?auto=compress&w=500'},
+        {t: 'Okyanus Dalgaları Sinematik', src: 'https://cdn.pixabay.com/vimeo/243743510/sea-12501.mp4?width=1280', img: 'https://images.pexels.com/photos/1001633/pexels-photo-1001633.jpeg?auto=compress&w=500'}
     ];
 
-    function load() {
-        // Shorts
+    function init() {
         const sn = document.getElementById('sNav');
+        const vg = document.getElementById('vGrid');
+
+        // 10 Shorts (Hepsi Çalışan Link)
         for(let i=0; i<10; i++) {
-            sn.innerHTML += `<div class="s-circle"><img src="${videos[i%3].img}"><p>Shorts #${i+1}</p></div>`;
+            let v = videoData[i % 5];
+            sn.innerHTML += `<div class="s-circle"><img src="${v.img}"><p>Shorts #${i+1}</p></div>`;
         }
 
-        // 40 Video (10 Sıra x 4 Sütun)
-        const vg = document.getElementById('vGrid');
+        // 40 Video (4'lü Düzen - 10 Sıra)
         for(let i=1; i<=40; i++) {
-            let v = videos[i%3];
-            let views = (Math.random() * 50 + 1).toFixed(1); // 1.0K - 50.0K arası rastgele
+            let v = videoData[i % 5];
+            let views = (Math.random() * 100 + 1).toFixed(1);
             vg.innerHTML += `
                 <div class="v-card">
-                    <div class="thumb"><img src="${v.img}"></div>
+                    <div class="thumb" onclick="window.open('${v.src}', '_blank')">
+                        <img src="${v.img}" onerror="this.src='https://via.placeholder.com/400x225/111/fff?text=Video+Yükleniyor...'">
+                    </div>
                     <div class="v-info">
-                        <h4>${v.t} #${i}</h4>
-                        <div class="stats-line">
-                            <span>${views}B İzlenme</span>
-                            <span>${i} saat önce</span>
-                        </div>
+                        <h4>${v.t} | Sinema Serisi #${i}</h4>
+                        <p class="stats">${views}B İzlenme • ${i} dk önce</p>
                         <div class="v-actions">
-                            <div class="action-btns">
-                                <i class="far fa-heart" onclick="this.classList.toggle('fas'); this.style.color=this.classList.contains('fas')?'red':''"></i>
+                            <div class="icons">
+                                <i class="far fa-heart" onclick="this.classList.toggle('fas'); this.style.color=this.classList.contains('fas')?'#ff4d4d':''"></i>
                                 <i class="far fa-comment" onclick="toggleChat()"></i>
+                                <i class="fas fa-share"></i>
                             </div>
-                            <button style="border:none; background:var(--accent); font-size:9px; font-weight:bold; padding:4px 8px; border-radius:5px; cursor:pointer;" onclick="this.innerText='Aboneden Çık'; this.style.background='#333'; this.style.color='#aaa';">Abone Ol</button>
+                            <button style="border:none; background:var(--accent); color:black; font-size:9px; font-weight:bold; padding:4px 10px; border-radius:15px; cursor:pointer;" onclick="this.innerText='Aboneden Çık'; this.style.background='#333'; this.style.color='#888';">Abone Ol</button>
                         </div>
                     </div>
                 </div>`;
@@ -145,17 +130,15 @@
     }
 
     function toggleProfile() {
-        const panel = document.getElementById('profilePanel');
-        panel.classList.toggle('active');
-        document.getElementById('mainContent').style.opacity = panel.classList.contains('active') ? "0.3" : "1";
+        document.getElementById('pPanel').classList.toggle('active');
     }
 
     function toggleChat() {
-        const chat = document.getElementById('chatBox');
-        chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+        const c = document.getElementById('chatBox');
+        c.style.display = (c.style.display === 'flex') ? 'none' : 'flex';
     }
 
-    load();
+    init();
 </script>
 </body>
 </html>
