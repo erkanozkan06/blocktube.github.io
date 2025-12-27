@@ -3,183 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BlockTube Creator Studio</title>
+    <title>BlockTube - Decentralized Media</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --bg: #000; --accent: #00d2ff; --card-bg: #111; --success: #00ff88; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        :root { --bg: #050505; --accent: #00d2ff; --glass: rgba(255,255,255,0.03); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg); color: white; overflow-x: hidden; }
 
-        header { position: fixed; top: 0; width: 100%; height: 60px; background: rgba(0,0,0,0.95); display: flex; justify-content: space-between; align-items: center; padding: 0 15px; z-index: 1000; border-bottom: 1px solid #222; }
-        .logo { color: var(--accent); font-weight: bold; font-size: 20px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
-        .logo img { height: 32px; border-radius: 6px; border: 1px solid var(--accent); }
+        header { position: fixed; top: 0; width: 100%; height: 60px; background: rgba(0,0,0,0.8); display: flex; justify-content: space-between; align-items: center; padding: 0 15px; z-index: 1000; backdrop-filter: blur(15px); border-bottom: 1px solid #1a1a1a; }
+        .logo { color: var(--accent); font-weight: bold; font-size: 22px; cursor: pointer; letter-spacing: -1px; }
 
-        main { padding: 75px 8px 20px 8px; max-width: 1600px; margin: 0 auto; }
+        main { padding: 75px 10px; max-width: 1400px; margin: 0 auto; }
 
-        /* 4'LÜ GRID */
-        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .v-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #222; }
-        .thumb { position: relative; width: 100%; aspect-ratio: 16/9; cursor: pointer; }
-        .thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .v-info { padding: 10px; }
-        .v-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        /* POPÜLER SHORTS BÖLÜMÜ */
+        .shorts-wrapper { margin-bottom: 30px; }
+        .shorts-title { font-size: 16px; margin-bottom: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .shorts-container { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .shorts-container::-webkit-scrollbar { display: none; }
+        .short-card { flex: 0 0 auto; width: 110px; height: 180px; border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; border: 1px solid #222; }
+        .short-card video { width: 100%; height: 100%; object-fit: cover; }
+        .short-card .overlay { position: absolute; bottom: 8px; left: 8px; font-size: 10px; font-weight: bold; text-shadow: 0 1px 4px #000; }
 
-        /* PROFIL PANELİ (STUDYO) */
-        #pPanel { position: fixed; right: -350px; top: 0; width: 340px; height: 100vh; background: #0a0a0a; z-index: 2000; transition: 0.4s; padding: 25px; border-left: 1px solid #222; overflow-y: auto; }
+        /* VİDEO GRİD (4'LÜ) */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .v-item { background: var(--glass); border-radius: 12px; overflow: hidden; transition: 0.3s; border: 1px solid #111; }
+        .v-item:hover { border-color: var(--accent); }
+        .thumb-box { width: 100%; aspect-ratio: 16/9; position: relative; cursor: pointer; }
+        .thumb-box img { width: 100%; height: 100%; object-fit: cover; }
+        .v-meta { padding: 12px; }
+        .v-meta h4 { font-size: 12px; font-weight: 500; height: 34px; overflow: hidden; }
+        .v-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+
+        /* PROFİL PANELİ */
+        #pPanel { position: fixed; right: -350px; top: 0; width: 320px; height: 100vh; background: #000; z-index: 2000; transition: 0.4s; padding: 30px; border-left: 1px solid #222; }
         #pPanel.active { right: 0; }
-        .wallet-card { background: linear-gradient(135deg, #111, #222); padding: 20px; border-radius: 15px; border: 1px solid var(--accent); margin: 20px 0; text-align: center; }
-        
-        /* ANALIZ TABLOSU (TABLO1) */
-        #tabloContainer { display: none; background: #111; border-radius: 10px; padding: 15px; margin-top: 20px; border: 1px solid #333; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
-        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-        th { background: #222; color: var(--accent); }
+        .copyright-box { background: #111; padding: 15px; border-radius: 10px; font-size: 11px; color: #777; margin-top: 20px; line-height: 1.6; }
 
-        /* YÜKLEME ÇUBUĞU */
-        #uploadProgress { display: none; width: 100%; background: #222; height: 10px; border-radius: 5px; margin-top: 10px; overflow: hidden; }
-        #progressBar { width: 0%; height: 100%; background: var(--accent); transition: 0.3s; }
+        /* TABLO1 SİSTEMİ */
+        #tablo1 { display: none; margin-top: 20px; font-size: 11px; width: 100%; border-collapse: collapse; }
+        #tablo1 td { padding: 8px; border-bottom: 1px solid #222; }
 
-        .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-upload { background: #fff; color: #000; }
-        .btn-stats { background: var(--accent); color: #000; }
-
-        @media (max-width: 800px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo" onclick="location.reload()"><img src="1766565458715.jpg"> BlockTube</div>
-    <div style="display: flex; gap: 15px; align-items: center;">
-        <div id="headerBalance" style="color:var(--success); font-weight:bold; font-size:14px;">₺250.00</div>
-        <img src="https://images.pexels.com/users/avatars/223337/pexels-user-223337.jpeg?auto=compress&w=50" onclick="toggleProfile()" style="width:35px; border-radius:50%; border:2px solid var(--accent); cursor:pointer">
-    </div>
+    <div class="logo" onclick="location.reload()">BlockTube</div>
+    <img src="https://i.pravatar.cc/150?u=erkan" onclick="toggleP()" style="width:32px; border-radius:50%; cursor:pointer; border: 1px solid var(--accent)">
 </header>
 
 <main>
-    <div class="video-grid" id="vGrid"></div>
+    <div class="shorts-wrapper">
+        <div class="shorts-title"><i class="fas fa-bolt" style="color: #ffaa00;"></i> Popüler Shorts</div>
+        <div class="shorts-container" id="sCont"></div>
+    </div>
+
+    <div class="grid" id="vGrid"></div>
 </main>
 
 <div id="pPanel">
-    <i class="fas fa-times" style="float:right; cursor:pointer" onclick="toggleProfile()"></i>
-    <div style="text-align:center;">
-        <img src="https://images.pexels.com/users/avatars/223337/pexels-user-223337.jpeg?auto=compress&w=100" style="width:70px; border-radius:50%; border:2px solid var(--accent);">
-        <h3>erkanozkan06</h3>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3>Kanalım</h3>
+        <i class="fas fa-times" onclick="toggleP()" style="cursor:pointer"></i>
     </div>
-
-    <div class="wallet-card">
-        <p style="font-size:11px; color:#888;">Toplam Kazanç</p>
-        <h2 id="mainBalance">₺250.00</h2>
-        <button onclick="withdraw()" style="background:transparent; border:1px solid #444; color:#aaa; font-size:10px; padding:5px 10px; border-radius:10px; margin-top:10px; cursor:pointer;">Para Çek</button>
-    </div>
-
-    <input type="file" id="fileInput" style="display:none" onchange="startUpload()">
-    <button class="btn btn-upload" onclick="document.getElementById('fileInput').click()"><i class="fas fa-plus"></i> Video Yükle</button>
     
-    <div id="uploadProgress"><div id="progressBar"></div></div>
-    <p id="uploadStatus" style="font-size:10px; text-align:center; color:var(--success); display:none; margin-bottom:10px;">Video başarıyla yüklendi!</p>
+    <div style="margin:25px 0; text-align:center;">
+        <img src="https://i.pravatar.cc/150?u=erkan" style="width:80px; border-radius:50%; border:2px solid var(--accent)">
+        <h2 style="margin-top:10px;">erkanozkan06</h2>
+        <p style="color:var(--accent); font-size:14px; font-weight:bold; margin-top:5px;">₺ 250.00</p>
+    </div>
 
-    <button class="btn btn-stats" onclick="toggleTablo()"><i class="fas fa-table"></i> Kanal Analizi (tablo1)</button>
+    <button onclick="toggleTablo()" style="width:100%; padding:10px; background:var(--accent); border:none; border-radius:8px; font-weight:bold; cursor:pointer">tablo1: Dağılım</button>
 
-    <div id="tabloContainer">
-        <h4 style="font-size:13px; color:var(--accent);">Kanal İstatistikleri</h4>
-        <table id="statsTable">
-            <thead>
-                <tr><th>Video</th><th>İzlenme</th><th>Kazanç</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>Cyber City</td><td>12.4K</td><td>₺45.00</td></tr>
-                <tr><td>Neon Drive</td><td>8.2K</td><td>₺32.10</td></tr>
-                <tr><td>Nature VR</td><td>24.1K</td><td>₺98.50</td></tr>
-            </tbody>
-        </table>
+    <table id="tablo1">
+        <tr><td>Yayıncı Payı</td><td>%30</td></tr>
+        <tr><td>İzleyici Payı</td><td>%30</td></tr>
+        <tr><td>Telif Sahibi</td><td>%20</td></tr>
+        <tr><td>Platform</td><td>%20</td></tr>
+    </table>
+
+    <div class="copyright-box">
+        <i class="fas fa-shield-alt"></i> <b>Telif Hakları Merkezi:</b><br>
+        Bu platformdaki içerikler akıllı sözleşmeler ile korunmaktadır. Paylaşılan her içerik 30/30/20/20 kuralına göre merkeziyetsiz dağıtılır.
     </div>
 </div>
 
 <script>
-    let balance = 250.00;
+    const videos = [
+        {t: 'Cyber City Drive', src: 'https://cdn.pixabay.com/vimeo/370213192/neon-30114.mp4?width=1280', img: 'https://images.pexels.com/photos/2524368/pexels-photo-2524368.jpeg?auto=compress&w=500'},
+        {t: 'Abstract Ocean', src: 'https://cdn.pixabay.com/vimeo/243743510/sea-12501.mp4?width=1280', img: 'https://images.pexels.com/photos/1001633/pexels-photo-1001633.jpeg?auto=compress&w=500'},
+        {t: 'Nature Silence', src: 'https://cdn.pixabay.com/vimeo/328941011/nature-22440.mp4?width=1280', img: 'https://images.pexels.com/photos/15286/pexels-photo-15286.jpeg?auto=compress&w=500'}
+    ];
 
-    function init() {
+    function render() {
+        const sc = document.getElementById('sCont');
         const vg = document.getElementById('vGrid');
-        const imgs = [
-            'https://images.pexels.com/photos/2524368/pexels-photo-2524368.jpeg?auto=compress&w=400',
-            'https://images.pexels.com/photos/1089438/pexels-photo-1089438.jpeg?auto=compress&w=400',
-            'https://images.pexels.com/photos/313782/pexels-photo-313782.jpeg?auto=compress&w=400'
-        ];
 
+        // 10 Shorts (Kaydırmalı popüler içerikler)
+        for(let i=0; i<10; i++) {
+            let v = videos[i%3];
+            sc.innerHTML += `
+                <div class="short-card">
+                    <video src="${v.src}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>
+                    <div class="overlay">@short_${i+1}</div>
+                </div>`;
+        }
+
+        // 40 Video (4'lü sıra - Toplam 10 satır)
         for(let i=1; i<=40; i++) {
+            let v = videos[i%3];
             vg.innerHTML += `
-                <div class="v-card">
-                    <div class="thumb"><img src="${imgs[i%3]}"></div>
-                    <div class="v-info">
-                        <h4 style="font-size:11px;">Sinematik Video #${i}</h4>
-                        <div class="v-actions">
-                            <i class="far fa-heart" style="cursor:pointer" onclick="likeVideo(this)"></i>
-                            <span style="font-size:10px; color:#555;">${(Math.random()*10).toFixed(1)}K İzlenme</span>
-                            <button style="border:none; background:var(--accent); font-size:9px; padding:4px 8px; border-radius:5px; font-weight:bold;">Abone Ol</button>
+                <div class="v-item">
+                    <div class="thumb-box" onclick="window.open('${v.src}')">
+                        <img src="${v.img}">
+                    </div>
+                    <div class="v-meta">
+                        <h4>${v.t} | Digital Art #${i}</h4>
+                        <div class="v-bottom">
+                            <span style="font-size:10px; color:#555;">${i*2}K İzlenme</span>
+                            <i class="far fa-heart" onclick="this.classList.toggle('fas'); this.style.color='red'"></i>
                         </div>
                     </div>
                 </div>`;
         }
     }
 
-    function likeVideo(icon) {
-        if(!icon.classList.contains('fas')) {
-            icon.classList.replace('far', 'fas');
-            icon.style.color = 'red';
-            // Her beğeni 0.50 TL kazandırır
-            balance += 0.50;
-            updateBalance();
-        }
+    function toggleP() { document.getElementById('pPanel').classList.toggle('active'); }
+    function toggleTablo() { 
+        const t = document.getElementById('tablo1');
+        t.style.display = t.style.display === 'table' ? 'none' : 'table';
     }
 
-    function updateBalance() {
-        const bText = `₺${balance.toFixed(2)}`;
-        document.getElementById('mainBalance').innerText = bText;
-        document.getElementById('headerBalance').innerText = bText;
-    }
-
-    function toggleProfile() {
-        document.getElementById('pPanel').classList.toggle('active');
-    }
-
-    function toggleTablo() {
-        const t = document.getElementById('tabloContainer');
-        t.style.display = t.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function startUpload() {
-        const bar = document.getElementById('uploadProgress');
-        const progress = document.getElementById('progressBar');
-        const status = document.getElementById('uploadStatus');
-        
-        bar.style.display = 'block';
-        status.style.display = 'none';
-        let width = 0;
-        
-        let interval = setInterval(() => {
-            if (width >= 100) {
-                clearInterval(interval);
-                status.style.display = 'block';
-                // Yeni video tabloya eklenir
-                const tbody = document.querySelector('#statsTable tbody');
-                tbody.innerHTML += `<tr><td>Yeni Video</td><td>0</td><td>₺0.00</td></tr>`;
-            } else {
-                width += 5;
-                progress.style.width = width + '%';
-            }
-        }, 100);
-    }
-
-    function withdraw() {
-        if(balance > 0) {
-            alert(`₺${balance.toFixed(2)} tutarındaki kazancınız banka hesabınıza aktarılıyor!`);
-            balance = 0;
-            updateBalance();
-        }
-    }
-
-    init();
+    render();
 </script>
 </body>
 </html>
